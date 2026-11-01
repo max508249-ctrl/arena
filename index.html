@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Арена моделей в «Эволюции доверия»</title>
+<meta name="description" content="Бонусная глава к «Эволюции доверия» Ники Кейса: стратегии в ней написали языковые модели (Claude, Kimi, GigaChat). Сыграй с ними один на один или в турнире — обыграешь?">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Эволюция доверия">
+<meta property="og:title" content="Эволюция доверия + бонус «Арена моделей»">
+<meta property="og:description" content="Бонусная глава к «Эволюции доверия» Ники Кейса: стратегии в ней написали языковые модели (Claude, Kimi, GigaChat). Сыграй с ними один на один или в турнире — обыграешь?">
+<meta property="og:url" content="https://max508249-ctrl.github.io/arena/">
+<meta property="og:image" content="https://max508249-ctrl.github.io/arena/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="game/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pangolin&family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Шрифт самой игры — запасной, если Google Fonts недоступен */
+@font-face{ font-family: "Pangolin Game"; src: url(game/css/Pangolin-Regular.ttf) format("truetype"); font-display: swap; }
+/* Шкаф игрового автомата: тёмный корпус (цвет подвала игры), белый экран с игрой, жёлтый — как подсвеченная клетка выигрыша */
+:root{
+	--bg: #222222;          /* корпус — как подвал оригинальной игры */
+	--panel: #2b2b29;       /* вставки */
+	--line: #3b3b38;
+	--fg: #f3f2ec;          /* текст */
+	--muted: #a7a69d;
+	--accent: #ffe663;      /* подсвеченная клетка выигрыша в автомате */
+	--accent-ink: #222222;
+	--link: #f07a6f;        /* красные ссылки «Авторства», осветлённые для тёмного фона */
+	--screen: #ffffff;
+	--f-display: "Pangolin", "Pangolin Game", "Comic Sans MS", "Segoe Print", cursive;
+	--f-body: "Golos Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+	--f-mono: "IBM Plex Mono", "Consolas", "Menlo", monospace;
+	color-scheme: dark;
+}
+html{ background: var(--bg); }
+body{
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--f-body);
+	font-size: 16px;
+	line-height: 1.55;
+	padding-left: max(16px, env(safe-area-inset-left, 0px));
+	padding-right: max(16px, env(safe-area-inset-right, 0px));
+	padding-block: 20px 40px;
+}
+.wrap{ max-width: 1200px; margin: 0 auto; display: grid; gap: 22px; }
+
+/* Шапка */
+.marquee{ display: grid; gap: 6px; }
+.eyebrow{ font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+h1{
+	font-family: var(--f-display); font-weight: 400;
+	font-size: clamp(34px, 6vw, 56px); line-height: 1.02; margin: 0;
+	text-wrap: balance;
+}
+.hats{ display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin-top: 4px; }
+.hat{
+	width: 40px; height: 40px; flex: none;
+	background: url(game/assets/ui/sandbox_hats.png) 0 0 / auto 100% no-repeat;
+}
+.lead{ max-width: 68ch; margin: 0; color: var(--fg); }
+.lead b{ font-weight: 600; }
+
+/* Экран */
+.stage{
+	position: relative; width: 100%; overflow: hidden;
+	background: var(--screen); border-radius: 6px;
+	box-shadow: 0 0 0 6px var(--panel), 0 0 0 7px var(--line);
+}
+.stage iframe{
+	position: absolute; left: 0; top: 0;
+	width: 960px; height: 600px; border: 0; display: block;
+	transform-origin: 0 0;
+}
+.stage:fullscreen{ border-radius: 0; box-shadow: none; background: #000; }
+
+.controls{ display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn{
+	font: 500 15px/1 var(--f-body);
+	padding: 11px 16px; border-radius: 999px; cursor: pointer;
+	border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+}
+.btn:hover{ border-color: var(--muted); }
+.btn:focus-visible, a:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.primary{ background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover{ filter: brightness(1.05); }
+.status{ font-size: 14px; color: var(--muted); }
+.phone-hint{ display: none; margin: 0; font-size: 14px; color: var(--muted); }
+@media (max-width: 700px) and (orientation: portrait){ .phone-hint{ display: block; } }
+
+/* Описание */
+.info{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 22px 36px; }
+.info section{ min-width: 0; }
+h2{
+	font-family: var(--f-display); font-weight: 400; font-size: 26px; line-height: 1.15;
+	margin: 0 0 8px;
+}
+.info p, .info li{ margin: 0; }
+.info p + p{ margin-top: 8px; }
+.info ul{ margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.cast{ list-style: none; padding: 0 !important; gap: 10px !important; }
+.cast li{ display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: start; }
+.cast .hat{ margin-top: 2px; }
+.cast b{ font-weight: 600; }
+.c5{ color: #f08b62; } .k5{ color: #b195f5; } .gt{ color: #3fc79a; } .gs{ color: #4cc0dc; } .gp{ color: #69b97a; }
+a{ color: var(--link); }
+.mono{ font-family: var(--f-mono); font-size: 13px; }
+footer{ border-top: 1px solid var(--line); padding-top: 14px; color: var(--muted); font-size: 14px; display: grid; gap: 6px; max-width: 100ch; }
+@media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+	<header class="marquee">
+		<div class="eyebrow">Бонусная глава к «Эволюции доверия» Ники Кейса</div>
+		<h1>Арена моделей</h1>
+		<div class="hats" aria-hidden="true">
+			<span class="hat" style="background-position:-320px 0"></span>
+			<span class="hat" style="background-position:-360px 0"></span>
+			<span class="hat" style="background-position:-400px 0"></span>
+			<span class="hat" style="background-position:-440px 0"></span>
+			<span class="hat" style="background-position:-480px 0"></span>
+		</div>
+		<p class="lead">Пять новых персонажей — стратегии, которые написали языковые модели: <b>Claude 5.0</b>, <b>Kimi 5.0</b> и три стратегии <b>GigaChat</b>. Их код перенесён в игру дословно. Глава начинается с камня на распутье: главная дорога — сыграть с Claude, налево — узнать игру, прямо — турнир.</p>
+	</header>
+
+	<div class="stage" id="stage">
+		<iframe id="game" src="game/index.html" title="Эволюция доверия с бонусной главой «Арена моделей»"></iframe>
+	</div>
+
+	<div class="controls">
+		<button class="btn primary" id="to-arena" type="button">К арене моделей</button>
+		<button class="btn" id="restart" type="button">Игра с начала</button>
+		<button class="btn" id="full" type="button">Во весь экран</button>
+		<span class="status" id="status" role="status"></span>
+	</div>
+	<p class="phone-hint">Игра свёрстана под экран 960 × 600: поверни телефон горизонтально — игра встанет на весь экран по высоте. «Во весь экран» на Android поворачивает картинку сам.</p>
+
+	<div class="info">
+		<section>
+			<h2>Что нового</h2>
+			<ul>
+				<li><b>Камень на распутье</b> — с него начинается глава 10. Надпись — в рифму: «направо пойдёшь — Claude на матч позовёшь» (главная дорога: сразу один на один с Claude 5.0), «налево пойдёшь — у дуба ума наберёшь» (узнать игру), «прямо пойдёшь — к арене дойдёшь» (турнир «как на арене»). У дорог — указатели: что там и сколько займёт. Можно и клавишами ← ↑ →.</li>
+				<li><b>Второй камень</b> у арены: «налево пойдёшь — сам в турнир попадёшь, направо пойдёшь — урок проведёшь, назад пойдёшь — к первому камню придёшь». Под скоростью сказано, что это: как быстро персонажи разыгрывают раунд у автомата.</li>
+				<li><b>Дуб «узнать игру»</b>: на ветках — все 13 игроков (нажми — карточка и «сыграть один на один»), на верхушке — «Кто сильнее» с двумя графиками, у корней — сундук со свитками: правила за минуту, как модели писали сами, чему научила арена, оригинал Ники Кейса. Кот учёный подскажет, что где.</li>
+				<li><b>Дуэль</b> длится 8–12 раундов — сколько именно, не знает никто. Ошибку соперника видно только после матча, как стратегиям на арене. Скорость — обычно, быстро или мгновенно.</li>
+				<li><b>Итог дуэли</b> — честное сравнение: тот же матч переигрывается с Claude 5.0 и Kimi 5.0 на твоём месте, видны все ходы.</li>
+				<li><b>Турнир</b> на половине арены — 17 игроков и ты (Claude 5.0 и Kimi 5.0 по трое, остальные по одному), с каждым свой матч. Слева — арена: стрелка к сопернику, линии сыгранных матчей; вслепую соперник открывается только после матча. Справа — автомат. В конце остальные доигрывают между собой, трое худших выбывают, трое лучших получают копию. Скорость — обычно, быстро или мгновенно. Итог — твоё место из 18 и места моделей на твоём месте. Там же ставка: кто будет лидером через 10 поколений.</li>
+				<li><b>Твой ученик</b> — ты в малиновой кепке. Научи его пяти урокам (что делать в первом раунде, если вы оба доверились, если соперник обманул…) — и он сыграет за тебя в песочнице, на арене с моделями.</li>
+				<li><b>Песочница:</b> на странице «популяция» — персонажи, модели и твой ученик; из главы 10 ползунки независимые: двигается только свой вид, всего — до 50 игроков. Песочница ученика начинается с 19: половина арены и двое учеников.</li>
+				<li><b>Выйти назад</b> можно с каждого экрана: из дуэли — к камню, из турнира — ко второму камню (с вопросом «точно выйти?»).</li>
+				<li>В бонус ведут кнопка в «Авторстве» и одиннадцатая точка внизу игры.</li>
+			</ul>
+		</section>
+		<section>
+			<h2>Новые персонажи</h2>
+			<ul class="cast">
+				<li><span class="hat" style="background-position:-320px 0"></span><span><b class="c5">Claude 5.0 «Гашение эха».</b> Начинает с доверия, за обман без причины отвечает одним обманом; если на его наказание ответили ударом, прощает это эхо.</span></li>
+				<li><span class="hat" style="background-position:-360px 0"></span><span><b class="k5">Kimi 5.0 «Чтец зеркал».</b> Начинает с доверия, за обман без причины отвечает одним обманом; если на его наказания почти всегда отвечают обманом, перестаёт наказывать.</span></li>
+				<li><span class="hat" style="background-position:-400px 0"></span><span><b class="gt">GigaChat «Три шанса».</b> Три хода доверяет, дальше повторяет твой прошлый ход.</span></li>
+				<li><span class="hat" style="background-position:-440px 0"></span><span><b class="gs">GigaChat «Регенерирующий щит».</b> Повторяет твой ход, но после своего обмана всегда кладёт монету.</span></li>
+				<li><span class="hat" style="background-position:-480px 0"></span><span><b class="gp">GigaChat «Терпеливый старт».</b> Отвечает обманом сразу, но из взаимной ссоры выходит первым.</span></li>
+			</ul>
+		</section>
+	</div>
+
+	<footer>
+		<div>Оригинал — Nicky Case, <a href="https://ncase.me/trust/" target="_blank" rel="noopener">«The Evolution of Trust»</a> (CC0). Русский перевод — <a href="https://github.com/notdotteam/trust" target="_blank" rel="noopener">notdotteam</a>. Музыка и почти все звуки — CC0; «Slot machine» — lukaso (CC Sampling+), «click plink pop boop bonk» — Owdeo (CC BY-NC).</div>
+		<div>Если экран игры остался пустым, откройте её напрямую: <a href="game/index.html" target="_self">game/index.html</a>.</div>
+		<div>Код стратегий взят из заявок моделей на арену и исполняется в браузере, как и вся игра. Рядом с кодом каждой стратегии в файле игры записан его sha256, например Claude 5.0 — <span class="mono">c5fac231…</span></div>
+	</footer>
+
+</div>
+
+<script>
+(function(){
+	var stage = document.getElementById("stage");
+	var frame = document.getElementById("game");
+	var statusEl = document.getElementById("status");
+	var W = 960, H = 600;
+
+	var touch = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+	function fullEl(){ return document.fullscreenElement || document.webkitFullscreenElement || null; }
+	function landscape(){ return window.innerWidth > window.innerHeight; }
+
+	// Экран игры масштабируется под ширину страницы (игра свёрстана под 960 × 600).
+	// Телефон горизонтально — ещё и под высоту экрана, чтобы игра была видна целиком, без прокрутки.
+	function fit(){
+		var full = fullEl() === stage;
+		var s;
+		if(full){
+			s = Math.min(window.innerWidth / W, window.innerHeight / H);
+			frame.style.left = Math.max(0, (window.innerWidth - W * s) / 2) + "px";
+			frame.style.top = Math.max(0, (window.innerHeight - H * s) / 2) + "px";
+			stage.style.height = "";
+		}else{
+			s = Math.min(stage.clientWidth / W, 1.25);
+			if(touch && landscape()) s = Math.min(s, (window.innerHeight - 8) / H);
+			frame.style.left = Math.max(0, (stage.clientWidth - W * s) / 2) + "px";
+			frame.style.top = "0px";
+			stage.style.height = Math.round(H * s) + "px";
+		}
+		frame.style.transform = "scale(" + s + ")";
+	}
+	fit();
+	if(window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+	window.addEventListener("resize", fit);
+	document.addEventListener("fullscreenchange", fit);
+	document.addEventListener("webkitfullscreenchange", fit);
+
+	// Повернули телефон горизонтально — показать игру целиком
+	window.addEventListener("orientationchange", function(){
+		setTimeout(function(){
+			fit();
+			if(touch && landscape() && !fullEl() && stage.scrollIntoView) stage.scrollIntoView({block: "center"});
+		}, 300);
+	});
+
+	function say(text){ statusEl.textContent = text || ""; }
+
+	// Сразу в главу 10: игра должна загрузиться; кнопка «Начать» нажимается за игрока
+	document.getElementById("to-arena").addEventListener("click", function(){
+		var w;
+		try{
+			w = frame.contentWindow;
+			if(!w || !w.slideshow || !w.publish) throw new Error("not ready");
+		}catch(e){
+			say("Нажмите «Начать», затем последнюю, одиннадцатую точку внизу игры.");
+			return;
+		}
+		var start = w.slideshow.objects && w.slideshow.objects.loading_button;
+		if(start){
+			if(!start.active){ say("Игра ещё загружается — попробуйте через пару секунд."); return; }
+			if(start.config && start.config.onclick) start.config.onclick();
+		}
+		if(w.Scratcher && w.Scratcher.isTransitioning){
+			setTimeout(function(){ w.publish("slideshow/scratch", ["arena"]); }, 1700);
+		}else{
+			w.publish("slideshow/scratch", ["arena"]);
+		}
+		say("");
+		try{ frame.focus(); }catch(e){}
+	});
+
+	document.getElementById("restart").addEventListener("click", function(){
+		say("");
+		try{ frame.contentWindow.location.reload(); }catch(e){ frame.src = "game/index.html"; }
+	});
+
+	// Во весь экран; на телефоне — сразу горизонтально (где браузер это позволяет: Android — да, iPhone — нет)
+	var fullBtn = document.getElementById("full");
+	var requestFull = stage.requestFullscreen || stage.webkitRequestFullscreen;
+	if(!requestFull){ fullBtn.hidden = true; }
+	function lockLandscape(){
+		try{
+			if(touch && screen.orientation && screen.orientation.lock){
+				var l = screen.orientation.lock("landscape");
+				if(l && l.catch) l.catch(function(){});
+			}
+		}catch(e){}
+	}
+	function onFullChange(){
+		if(fullEl() === stage){ lockLandscape(); }
+		else{ try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){} }
+	}
+	document.addEventListener("fullscreenchange", onFullChange);
+	document.addEventListener("webkitfullscreenchange", onFullChange);
+	fullBtn.addEventListener("click", function(){
+		var p;
+		try{ p = requestFull.call(stage); }catch(e){ p = null; }
+		if(p && p.catch) p.catch(function(){ say("Полноэкранный режим здесь недоступен."); });
+	});
+})();
+</script>

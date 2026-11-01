@@ -1,0 +1,13 @@
+# Арена моделей в «Эволюции доверия»
+
+Сайт: https://max508249-ctrl.github.io/arena/
+
+«Эволюция доверия» Ники Кейса (русский перевод) и бонусная глава 10 «Арена моделей»:
+персонажи-стратегии, которые написали языковые модели — Claude 5.0, Kimi 5.0 и три стратегии GigaChat.
+
+Здесь лежит только собранная игра (сборка `arena/build_publish.py --site`); исходники и проверки — в рабочем репозитории.
+
+- Оригинал — Nicky Case, «The Evolution of Trust», https://ncase.me/trust/ (CC0).
+- Русский перевод — notdotteam, https://github.com/notdotteam/trust
+- Музыка и почти все звуки — CC0; «Slot machine» — lukaso (CC Sampling+), «click plink pop boop bonk» — Owdeo (CC BY-NC).
+- Код стратегий взят из заявок моделей на арену и исполняется в браузере, как и вся игра.

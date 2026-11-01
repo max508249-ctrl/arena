@@ -1,0 +1,172 @@
+<!--
+
+TRANSLATION GUIDE:
+https://github.com/ncase/trust#how-to-translate-this-thang
+
+Hello fan-translaters!
+First off, thank you so much for taking the time to help out,
+I super appreciate it. :3 Anyway, to make translation a bit easier
+(or at least less painful) I've scattered comments about on
+what things you should translate, plus any additional info
+
+Translate the following files:
+
+    index.html - The title & social sharing text (a few words)
+    words.html - All the words for the interactive itself (~3,300 words)
+    (optional) notes/index.html - The footnotes (~1,100 words)
+    (optional) peeps/index.html - The full credits (a few words)
+
+Many thanks again!
+
+<3,
+~ Nicky Case
+
+-->
+<!doctype>
+<html>
+<head>
+
+	<!-- TO TRANSLATE: "title", "description" -->
+	<title>Эволюция доверия</title>
+	<meta name="description" content="интерактивное руководство теории игр о том, зачем и как мы доверяем друг другу"/>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="favicon.png">
+
+	<!-- TO TRANSLATE: "name", "description" -->
+	<meta itemprop="name" content="Эволюция доверия">
+	<meta itemprop="description" content="интерактивное руководство теории игр о том, зачем и как мы доверяем друг другу">
+	<meta itemprop="image" content="http://ncase.me/trust/social/thumbnail.png">
+
+	<!-- TO TRANSLATE: "title", "description" -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@ncasenmare">
+	<meta name="twitter:title" content="Эволюция доверия">
+	<meta name="twitter:description" content="интерактивное руководство теории игр о том, зачем и как мы доверяем друг другу">
+	<meta name="twitter:creator" content="@ncasenmare">
+	<meta name="twitter:image" content="http://ncase.me/trust/social/thumbnail.png">
+
+	<!-- TO TRANSLATE: "title", "description" -->
+	<meta property="og:title" content="Эволюция доверия">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="http://ncase.me/trust/">
+	<meta property="og:image" content="http://ncase.me/trust/social/thumbnail.png">
+	<meta property="og:description" content="интерактивное руководство теории игр о том, зачем и как мы доверяем друг другу">
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="css/slides.css">
+	<link rel="stylesheet" href="css/balloon.css">
+	<link rel="stylesheet" href="css/arena.css"> <!-- АРЕНА МОДЕЛЕЙ -->
+
+</head>
+<body>
+	<div id="preloader">загрузка...</div> <!-- TRANSLATE THIS -->
+	<div style="display:none" id="main">
+		<div id="slideshow_container">
+			<div id="slideshow"></div>
+			<div id="scratcher"></div>
+		</div>
+	</div>
+	<div style="display:none" id="footer">
+		<div id="sound" sound="on" class="no-select">
+			<div id="sound_icon"></div>
+			<div id="sound_on">ВКЛ</div> <!-- TRANSLATE THIS -->
+			<div id="sound_off">ВЫКЛ</div> <!-- TRANSLATE THIS -->
+		</div>
+		<div id="select"></div>
+
+		<!-- TRANSLATE "title" & "text". Make sure it's less than 112 characters, for Twitter's sake -->
+		<!-- Also, "link" will be changed later to whatever the link for the translated version will be. -->
+		<sharing title="Эволюция доверия"
+				 text="Люди больше не доверяют друг другу. Зачем? И как это исправить? Интерактивное руководство теории игр о доверии:"
+				 link="http://ncase.me/trust/"></sharing>
+
+		<!-- List of translations thus far! -->
+		<div id="translations">
+			fan-translations:
+			<a href="https://github.com/ncase/trust#how-to-translate-this-thang" target="_blank">(add one!)</a> &middot;
+			<a href="https://ccamara.github.io/trust/">Español de España</a> &middot;
+			<a href="https://maeriens.github.io/trust/">Español Latino</a> &middot;
+			<a href="https://ayowel.github.io/trust/">Français</a> &middot;
+			<a href="https://jkoelling.github.io/trust/">Deutsch</a> &middot;
+			<a href="https://lvdt.github.io/trust/">Italiano</a> &middot;
+			<a href="http://trust.alicedarner.se/">Svenska</a> &middot;
+			<a href="https://rayraz.github.io/trust/">Nederlands</a> &middot;
+			<a href="https://brunolemos.github.io/trust/">Português do Brasil</a> &middot;
+			<a href="https://osaatcioglu.github.io/trust/">Türkçe</a> &middot;
+			<a href="https://sin.github.io/trust/">Polski</a> &middot;
+			<a href="http://ncase.me/trust-hu/">Magyar</a> &middot;
+			<a href="http://www.varljiv.org/evolucija-povjerenja/index.html">hrvatski</a> &middot;
+			<a href="http://ncase.me/trust-et/">eesti</a> &middot;
+			<a href="https://fbricart.github.io/trust/">Català</a> &middot;
+			<a href="https://enfactorial.github.io/trust/">Română</a> &middot;
+			<a href="https://lightspot21.github.io/trust/">ελληνικά</a> &middot;
+			<a href="https://yaroslav-f.github.io/trust/">Українська</a> &middot;
+			<a href="http://ncase.me/trust-bg/">български език</a> &middot;
+			<a href="https://nghiatt90.github.io/trust-vn/">Tiếng Việt</a> &middot;
+			<a href="https://osori.github.io/trust-ko/">한국어</a> &middot; 
+			<a href="https://htlife.github.io/trust_jp/">日本語</a> &middot;
+			<a href="https://sekai.co/trust/">中文（简体）</a> &middot; 
+			<a href="https://audreyt.github.io/trust-zh-TW/">中文（臺灣）</a>	 &middot;
+			<a href="https://hamed.github.io/trust/">فارسی</a> &middot;
+			<a href="https://mudaraljundi.github.io/trust/">العربية</a> &middot;
+			<a href="https://nextghost.github.io/trust/">Česky</a> &middot;
+			<a href="https://reversedfate.github.io/trust/">latviešu valoda</a>
+		</div>
+
+	</div>
+</body>
+</html>
+
+<!-- Libraries -->
+<script src="js/lib/helpers.js"></script>
+<script src="js/lib/pegasus.js"></script>
+<script>var c_ = {};</script>
+<script src="js/lib/minpubsub.src.js"></script>
+<script src="js/lib/q.js"></script>
+<script src="js/lib/pixi.min.js"></script>
+<script src="js/lib/howler.js"></script>
+<script>var createjs = window;</script>
+<script src="js/lib/tweenjs-0.6.2.min.js"></script>
+<script>Ticker.framerate=60; Ticker.paused=true;</script>
+<script src="js/lib/sharing.js"></script>
+
+<!-- Core Engine -->
+<script src="js/core/Loader.js"></script>
+<script src="js/core/Slideshow.js"></script>
+<script src="js/core/SlideSelect.js"></script>
+<script src="js/core/Button.js"></script>
+<script src="js/core/TextBox.js"></script>
+<script src="js/core/Words.js"></script>
+<script src="js/core/IncDecNumber.js"></script>
+<script src="js/core/Slider.js"></script>
+<script src="js/core/Scratcher.js"></script>
+<script src="js/core/Background.js"></script>
+<script src="js/core/ImageBox.js"></script>
+<script src="js/core/PayoffsUI.js"></script>
+
+<!-- Simulations -->
+<script src="js/sims/Splash.js"></script>
+<script src="js/sims/PD.js"></script>
+<script src="js/sims/ArenaStrategies.js"></script> <!-- АРЕНА: новые персонажи -->
+<script src="js/sims/Iterated.js"></script>
+<script src="js/sims/Tournament.js"></script>
+<script src="js/sims/SandboxUI.js"></script>
+<script src="js/sims/ArenaUI.js"></script> <!-- АРЕНА: объекты бонусной главы -->
+
+<!-- Slides -->
+<script src="js/slides/0_Slides_Intro.js"></script>
+<script src="js/slides/1_Slides_OneOff.js"></script>
+<script src="js/slides/2_Slides_Iterated.js"></script>
+<script src="js/slides/3_Slides_Tournament.js"></script>
+<script src="js/slides/4_Slides_Evolution.js"></script>
+<script src="js/slides/5_Slides_Distrust.js"></script>
+<script src="js/slides/6_Slides_Noise.js"></script>
+<script src="js/slides/7_Slides_Sandbox.js"></script>
+<script src="js/slides/8_Slides_Conclusion.js"></script>
+<script src="js/slides/9_Slides_Credits.js"></script>
+<script src="js/slides/10_Slides_Arena.js"></script> <!-- АРЕНА: бонусная глава -->
+
+<!-- Main Code -->
+<script src="js/main.js"></script>
