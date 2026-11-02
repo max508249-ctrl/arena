@@ -561,25 +561,29 @@ SLIDES.push({
 	}
 });
 
-// 6. Итог матча: счёт; тот же матч с Claude 5.0 и Kimi 5.0 на твоём месте; все ходы; кто был соперником
+// 6. Итог матча: счёт; тот же матч с моделями на твоём месте (Claude 5.0, Kimi 5.0, с 02.11.2026 и DeepSeek); все ходы; кто был соперником
 var _arenaSigned = function(x){
 	return (x<0 ? "&minus;" : "") + Math.abs(x);
 };
 var _arenaName = function(id){
 	return "<span class='"+id+"'>"+_arenaWord("label_"+id)+"</span>";
 };
-// Вердикт: больше / столько же / меньше, чем у каждой модели на твоём месте в этом же матче
-var _arenaVerdict = function(you, c5, k5){
+// Вердикт: больше / столько же / меньше, чем у каждой модели на твоём месте в этом же матче.
+// scores — счёт каждой модели на твоём месте; модели с одинаковым ответом идут одной группой:
+// «Это больше, чем у Claude 5.0 и Kimi 5.0 на твоём месте, и меньше, чем у DeepSeek».
+var _arenaVerdict = function(you, scores){
 	var rel = function(x){ return (you>x) ? "more" : ((you==x) ? "equal" : "less"); };
-	var rc = rel(c5), rk = rel(k5), words;
-	if(rc==rk){
-		words = _arenaWord("arena_result_both_"+rc);
-	}else{
-		words = _arenaWord("arena_result_mixed");
-		words = words.replace(/\[R1\]/g, _arenaWord("arena_result_rel_"+rc));
-		words = words.replace(/\[R2\]/g, _arenaWord("arena_result_rel_"+rk));
-	}
-	return words.replace(/\[C\]/g, _arenaName("claude5")).replace(/\[K\]/g, _arenaName("kimi5"));
+	var groups = {more:[], equal:[], less:[]};
+	ARENA_CHARACTERS.forEach(function(id){
+		if(scores[id]!==undefined) groups[rel(scores[id])].push(_arenaName(id));
+	});
+	var used = ["more", "equal", "less"].filter(function(r){ return groups[r].length; });
+	if(used.length==1) return _arenaWord("arena_result_all_"+used[0]);
+	var list = function(a){ return (a.length==1) ? a[0] : a.slice(0, -1).join(", ")+" и "+a[a.length-1]; };
+	var parts = used.map(function(r){ return _arenaWord("arena_result_rel_"+r)+" у "+list(groups[r]); });
+	var text = parts[0]+" "+_arenaWord("arena_result_seat")
+		+ ((parts.length==2) ? ", и "+parts[1] : ", "+parts[1]+" и "+parts[2]);
+	return _arenaWord("arena_result_mixed").replace(/\[PARTS\]/g, text);
 };
 SLIDES.push({
 	id: "arena_result", chapter: "arena", nodot: true,
@@ -589,10 +593,11 @@ SLIDES.push({
 		var L = D.L || 0;
 		var per = L ? D.ys/L : 0;
 
-		// Тот же матч — те же раунды, те же ошибки, тот же соперник — с Claude 5.0 и Kimi 5.0 на твоём месте
+		// Тот же матч — те же раунды, те же ошибки, тот же соперник — с каждой моделью на твоём месте
 		var fair = !!(D.rolls && D.seed && D.history);
 		var C = fair ? _arenaReplay("claude5", D) : null;
 		var K = fair ? _arenaReplay("kimi5", D) : null;
+		var S = fair ? _arenaReplay("deepseek", D) : null;
 
 		// Счёт крупно, как в главе «Повторяющаяся игра»
 		self.add({
@@ -611,7 +616,7 @@ SLIDES.push({
 		text = text.replace(/\[L\]/g, L+"");
 		text = text.replace(/\[PER\]/g, _arenaNumber(per));
 		text = text.replace(/\[THEM\]/g, _arenaSigned(D.os));
-		if(fair) text += "<br><br>" + _arenaVerdict(D.ys, C.ys, K.ys);
+		if(fair) text += "<br><br>" + _arenaVerdict(D.ys, {claude5:C.ys, kimi5:K.ys, deepseek:S.ys});
 		self.add({
 			id:"score3", type:"TextBox",
 			x:290, y:50, width:640, height:130,
@@ -628,7 +633,8 @@ SLIDES.push({
 			var rows = [
 				{label:_arenaWord("arena_result_you"), history:D.history, score:D.ys},
 				{label:_arenaName("claude5"), history:C.history, score:C.ys},
-				{label:_arenaName("kimi5"), history:K.history, score:K.ys}
+				{label:_arenaName("kimi5"), history:K.history, score:K.ys},
+				{label:_arenaName("deepseek"), history:S.history, score:S.ys}
 			];
 			for(var i=0; i<rows.length; i++){
 				var y = 208 + i*34;
@@ -648,7 +654,7 @@ SLIDES.push({
 		}
 
 		// Кто это был (имя — ссылка на его карточку) и где он ошибался
-		var whoY = fair ? 316 : 212;
+		var whoY = fair ? 350 : 212; // под четырьмя полосками ходов: ты и три модели
 		self.add({
 			id:"whoPeep", type:"TextBox",
 			x:300, y:whoY, width:80, height:82,
@@ -731,7 +737,7 @@ SLIDES.push({
 			})(character, x, y, tooltipPos);
 		};
 		_addBet("claude5", 250, 260, "right"); _addBet("kimi5", 510, 260);
-		_addBet("tft", 250, 330, "right"); _addBet("giga_tri", 510, 330);
+		_addBet("tft", 250, 330, "right"); _addBet("deepseek", 510, 330);
 
 		self.add({
 			id:"forgot", type:"TextBox",
@@ -1036,6 +1042,7 @@ SLIDES.push({
 		var me = T.table || _arenaTourTable(T, null); // та же таблица, что в финале турнира (тот же жребий)
 		var c5 = _arenaTourTable(T, "claude5");
 		var k5 = _arenaTourTable(T, "kimi5");
+		var d5 = _arenaTourTable(T, "deepseek");
 
 		// Место и вердикт
 		var title = (me.tied ? _arenaWord("arena_tour_place_tied") : _arenaWord("arena_tour_place"))
@@ -1101,7 +1108,9 @@ SLIDES.push({
 			.replace(/\[C\]/g, _arenaName("claude5"))
 			.replace(/\[K\]/g, _arenaName("kimi5"))
 			.replace(/\[PC\]/g, _arenaPlaceWord(c5))
-			.replace(/\[PK\]/g, _arenaPlaceWord(k5));
+			.replace(/\[PK\]/g, _arenaPlaceWord(k5))
+			.replace(/\[S\]/g, _arenaName("deepseek"))
+			.replace(/\[PS\]/g, _arenaPlaceWord(d5));
 		self.add({
 			id:"seats", type:"TextBox",
 			x:130, y:330, width:700, height:60, align:"center", size:18,

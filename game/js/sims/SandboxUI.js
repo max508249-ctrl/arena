@@ -197,9 +197,7 @@ function SandboxUI(config){
 	modelsBox.appendChild(_makeLabel("arena_sandbox_models", {x:0, y:0, w:433}));
 	_makePopulationControl(    0, yOff+0,       "claude5",		0);
 	_makePopulationControl(xDiff, yOff+0,       "kimi5",		0);
-	_makePopulationControl(    0, yOff+yDiff,   "giga_tri",		0);
-	_makePopulationControl(xDiff, yOff+yDiff,   "giga_shield",	0);
-	_makePopulationControl(    0, yOff+yDiff*2, "giga_start",	0);
+	_makePopulationControl(    0, yOff+yDiff,   "deepseek",		0);
 
 	// АРЕНА: твой ученик — на третьей странице популяции: сколько учеников и чему ты их учишь
 	popTarget = studentBox;

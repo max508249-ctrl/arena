@@ -19,9 +19,7 @@ Tournament.resetGlobalVariables = function(){
 		// АРЕНА: новые персонажи (js/sims/ArenaStrategies.js), в песочнице их сначала нет
 		{strategy:"claude5", count:0},
 		{strategy:"kimi5", count:0},
-		{strategy:"giga_tri", count:0},
-		{strategy:"giga_shield", count:0},
-		{strategy:"giga_start", count:0},
+		{strategy:"deepseek", count:0},
 		{strategy:"student", count:0} // АРЕНА: твой ученик (Logic_student — js/sims/ArenaUI.js), играет по твоим урокам
 	];
 

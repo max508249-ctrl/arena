@@ -7,23 +7,17 @@
 /* Цвета новых персонажей (как .tft и остальные) */
 .claude5{ color:#D96B3F; }
 .kimi5{ color:#8E63E8; }
-.giga_tri{ color:#22A87C; }
-.giga_shield{ color:#2AA2BE; }
-.giga_start{ color:#3B8F4E; }
+.deepseek{ color:#1B93AB; }
 
 /* Значки в тексте (sandbox_hats.png, по 25 px) */
 .claude5 .icon{ 	background-position: -200px 0; }
 .kimi5 .icon{ 		background-position: -225px 0; }
-.giga_tri .icon{ 	background-position: -250px 0; }
-.giga_shield .icon{ background-position: -275px 0; }
-.giga_start .icon{ 	background-position: -300px 0; }
+.deepseek .icon{ 	background-position: -250px 0; }
 
 /* Портреты (peep_characters.png, по 105 px) */
 .character #peep[char=claude5]{     background-position: -840px 0; }
 .character #peep[char=kimi5]{       background-position: -945px 0; }
-.character #peep[char=giga_tri]{    background-position: -1050px 0; }
-.character #peep[char=giga_shield]{ background-position: -1155px 0; }
-.character #peep[char=giga_start]{  background-position: -1260px 0; }
+.character #peep[char=deepseek]{    background-position: -1050px 0; }
 
 /******** Выбор соперника ********/
 
@@ -545,7 +539,8 @@
 	line-height: 1.4;
 	color: #333;
 }
-.arena_parch_stronger .arena_parch_text{ top: 180px; }
+.arena_parch_stronger .arena_parch_text{ top: 200px; } /* под графиками: три модели по строке (с 02.11.2026 — и DeepSeek) */
+.arena_parch_stronger .arena_chart_row{ height: 30px; }
 .arena_parch_cat{
 	position: absolute;
 	left: 300px;
@@ -559,6 +554,10 @@
 	position: absolute;
 	left: 724px;
 	top: 330px;
+}
+.arena_note{ /* оговорка про названия моделей (свиток «Оригинал Ники Кейса») */
+	font-size: 15px;
+	color: #888;
 }
 .arena_go{
 	color: #dd4040;

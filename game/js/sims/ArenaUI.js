@@ -16,13 +16,13 @@ var ARENA_POP_ONE = 20, ARENA_POP_MAX = 50;
 
 // Наборы для песочницы: «как на арене» (34 игрока, длина матча 8–12), «как в игре»
 // и «твой ученик» (правая дорога второго камня) — с 01.11.2026 половина арены, как в турнире «сам»
-// (Claude 5.0 и Kimi 5.0 по трое, остальные по одному), и двое твоих учеников: 19 игроков, по трое выбывают
+// (Claude 5.0, Kimi 5.0 и DeepSeek по трое, остальные по одному), и двое твоих учеников: 19 игроков, по трое выбывают
 // и копируются; человечки в круге при 19 крупнее (автор: «со 19»), добавить игроков — ползунками, до 50
 var ARENA_PRESETS = {
 	arena: {
 		population:34, turns:10, randomTurns:true, evolution:5, noise:0.05,
 		agents:{tft:2, all_d:2, all_c:2, grudge:2, prober:2, tf2t:2, pavlov:2, random:2,
-			claude5:6, kimi5:6, giga_tri:2, giga_shield:2, giga_start:2}
+			claude5:6, kimi5:6, deepseek:6}
 	},
 	game: {
 		population:25, turns:10, randomTurns:false, evolution:5, noise:0.05,
@@ -31,7 +31,7 @@ var ARENA_PRESETS = {
 	student: {
 		population:19, turns:10, randomTurns:true, evolution:3, noise:0.05,
 		agents:{tft:1, all_d:1, all_c:1, grudge:1, prober:1, tf2t:1, pavlov:1, random:1,
-			claude5:3, kimi5:3, giga_tri:1, giga_shield:1, giga_start:1, student:2}
+			claude5:3, kimi5:3, deepseek:3, student:2}
 	}
 };
 
@@ -259,7 +259,8 @@ var _arenaReplay = function(seat, D){
 /*******************************
 
 Ты в турнире «как на арене» (левая дорога второго камня). С 01.11.2026 — арена вдвое меньше настоящей,
-в тех же долях: Claude 5.0 и Kimi 5.0 по трое, остальные одиннадцать видов по одному — 17 игроков и ты.
+в тех же долях: Claude 5.0 и Kimi 5.0 по трое, остальные одиннадцать видов по одному — 17 игроков и ты
+(с 02.11.2026 вместо трёх стратегий GigaChat — DeepSeek, тоже трое: у каждой модели по 6 мест на арене из 34).
 Ты играешь с каждым из 17 свой матч, и каждый матч засчитан один раз. (Раньше было 13 матчей с видами,
 засчитанных за все копии, — везение умножалось на число копий; замер — arena/tests/tour_size.js:
 половина арены ближе всего к настоящей.) Остальные играют друг с другом на движке игры
@@ -269,7 +270,7 @@ var _arenaReplay = function(seat, D){
 *******************************/
 var ARENA_TOUR = {
 	agents:{tft:1, all_d:1, all_c:1, grudge:1, prober:1, tf2t:1, pavlov:1, random:1,
-		claude5:3, kimi5:3, giga_tri:1, giga_shield:1, giga_start:1},
+		claude5:3, kimi5:3, deepseek:3},
 	selection:3
 };
 
@@ -1298,8 +1299,7 @@ function ArenaStone2(config){
 }
 
 // Кто придумал: подпись на карточке игрока
-var ARENA_CARD_BY = {claude5:"arena_by_claude", kimi5:"arena_by_kimi",
-	giga_tri:"arena_by_giga", giga_shield:"arena_by_giga", giga_start:"arena_by_giga"};
+var ARENA_CARD_BY = {claude5:"arena_by_claude", kimi5:"arena_by_kimi", deepseek:"arena_by_deepseek"};
 
 // Цвет персонажа с прозрачностью: фон под портретом
 var _arenaTint = function(id, a){
@@ -1406,7 +1406,7 @@ function ArenaOak(config){
 		["M420,300 C417,282 423,264 418,246 M419,280 C398,272 352,264 300,251 M421,274 C446,262 492,251 540,246", 13, 7],
 		["M300,251 C266,251 228,245 186,231 M540,246 C580,240 616,238 652,231 M418,250 C425,206 413,160 420,109 M419,242 C396,234 374,220 346,211 "
 			+ "M420,228 C444,221 470,214 494,211 M318,254 C306,228 264,194 226,171 M526,248 C550,226 580,196 612,171", 10.5, 5],
-		["M300,251 C290,247 280,243 266,241 M540,246 C552,244 562,242 574,241 M258,196 C267,178 278,160 286,143 M586,188 C575,171 563,157 554,143 "
+		["M258,196 C267,178 278,160 286,143 M586,188 C575,171 563,157 554,143 "
 			+ "M419,182 C398,158 374,131 348,117 M419,160 C441,141 467,125 492,117", 8.5, 3]
 	];
 	var branches = "", leaves = "", chain = "", frames = "";
@@ -1472,8 +1472,8 @@ function ArenaOak(config){
 
 	// Плоды — игроки: человечек в своей шляпе стоит на конце ветки (середина — точка плода)
 	var fruits = [["tft",190,204],["all_d",230,144],["all_c",285,116],["grudge",350,90],["prober",420,83],
-		["tf2t",490,90],["pavlov",555,116],["random",608,144],["giga_shield",645,204],
-		["giga_tri",270,214],["kimi5",350,184],["claude5",490,184],["giga_start",570,214]]; // Kimi 5.0 и Claude 5.0 — поровну от середины
+		["tf2t",490,90],["pavlov",555,116],["random",608,144],["deepseek",645,204],
+		["kimi5",350,184],["claude5",490,184]]; // Kimi 5.0 и Claude 5.0 — поровну от середины; DeepSeek — напротив Имитатора
 	var ph = 56, pw = Math.round(ph*300/325);
 	for(var i=0; i<fruits.length; i++){
 		var id = fruits[i][0];
@@ -1507,9 +1507,10 @@ function ArenaOak(config){
 config: {which, onclose: function(){}, onaction: function(slideID){}}
 
 *******************************/
-// Числа для «Кто сильнее»: лидер через 10 поколений из 400 прогонов (arena/tests/evo_arena.js)
-// и монеты за матч в турнире «как на арене» (arena/tests/who_stronger.js, облако 31.10.2026)
-var ARENA_STRONGER = {runs:{claude5:278, kimi5:122}, coins:{claude5:15.77, kimi5:15.62}};
+// Числа для «Кто сильнее»: лидер через 10 поколений из 400 прогонов (arena/tests/evo_arena.js . 400 10)
+// и монеты за матч в турнире «как на арене» (arena/tests/who_stronger.js . 20000 400), облако 02.11.2026 —
+// после замены трёх стратегий GigaChat на DeepSeek (до того: Claude 278, Kimi 122; 15,77 и 15,62)
+var ARENA_STRONGER = {runs:{claude5:279, kimi5:120, deepseek:1}, coins:{claude5:15.73, kimi5:15.59, deepseek:15.47}};
 
 function ArenaScroll(config){
 
@@ -1526,8 +1527,9 @@ function ArenaScroll(config){
 	var body = "";
 	if(which=="stronger"){
 		var chart = function(title, data, fmt){
-			var max = Math.max(data.claude5, data.kimi5), html = "<div class='arena_chart'><div class='arena_chart_t'>"+_arenaWord(title)+"</div>";
-			["claude5", "kimi5"].forEach(function(id){
+			var max = Math.max.apply(null, ARENA_CHARACTERS.map(function(id){ return data[id]; }));
+			var html = "<div class='arena_chart'><div class='arena_chart_t'>"+_arenaWord(title)+"</div>";
+			ARENA_CHARACTERS.forEach(function(id){
 				html += "<div class='arena_chart_row'><b class='"+id+"'>"+_arenaWord("label_"+id)+"</b>"
 					+ "<i style='width:"+Math.round(220*data[id]/max)+"px;background:"+PEEP_METADATA[id].color+"'></i>"
 					+ "<em>"+fmt(data[id])+"</em></div>";
